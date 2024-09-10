@@ -88,7 +88,7 @@ elif [ "$action" == "2" ]; then
     if [ "$use_existing" == "yes" ]; then
         # Использование существующего кошелька
         echo "Использование существующего кошелька ($wallet_name)..."
-        wallet_output=$(allorad keys add $wallet_name --recover 2>&1)
+        wallet_output=$(allorad keys add $wallet_name --recover)
         echo "$wallet_output" | tee "$wallet_info_file"
         
     else
