@@ -27,17 +27,17 @@ while true; do
             echo "Установка библиотек и зависимостей"
             
             # Установка нужных библиотек
-            sudo ./install_libraries.sh
+            ./install_libraries.sh
             
             echo "Установка завершена успешно."
             ;;
         2)
             echo "Создание кошелька"
-            sudo ./install_allorad_wallet.sh
+            ./install_allorad_wallet.sh
             ;;
         3)
             echo "Создание основного контейнера для подключения к Allora"
-            sudo ./create_main.sh
+            ./create_main.sh
             ;;
         4)
             echo "Проверка  логов ноды"
