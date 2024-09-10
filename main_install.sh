@@ -27,21 +27,21 @@ while true; do
             echo "Установка библиотек и зависимостей"
             
             # Установка нужных библиотек
-            ./install_libraries.sh
+            sudo ./install_libraries.sh
             
             echo "Установка завершена успешно."
             ;;
         2)
             echo "Создание кошелька"
-            ./install_allorad_wallet.sh
+            sudo ./install_allorad_wallet.sh
             ;;
         3)
             echo "Создание основного контейнера для подключения к Allora"
-            ./create_main.sh
+            sudo ./create_main.sh
             ;;
         4)
             echo "Проверка  логов ноды"
-			cd basic-coin-prediction-node
+			cd allora-huggingface-walkthrough
             if docker compose logs -f worker; then
 				echo "Логи контейнера успешно выведены."
 			else
