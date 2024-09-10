@@ -91,17 +91,6 @@ elif [ "$action" == "2" ]; then
         wallet_output=$(allorad keys add $wallet_name --recover 2>&1)
         echo "$wallet_output" | tee "$wallet_info_file"
         
-        # Проверка успешного восстановления кошелька
-        if echo "$wallet_output" | grep -q "name: $wallet_name"; then
-            echo "Кошелек успешно восстановлен. Информация сохранена в $wallet_info_file"
-            
-            # Вывод содержимого файла с информацией о кошельке
-            echo -e "\nСодержимое файла с информацией о кошельке ($wallet_info_file):"
-            cat "$wallet_info_file"
-        else
-            echo "Ошибка при восстановлении кошелька"
-            exit 1
-        fi
     else
         echo "Выбрано некорректное действие"
         exit 1
