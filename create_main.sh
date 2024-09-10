@@ -218,4 +218,9 @@ pip install -r requirements.txt
 
 # Запуск Docker Compose в фоновом режиме
 echo "Запуск ноды..."
+
+#Удаление и обновление образа контейнера
+docker-compose down --rmi all
+docker system prune -a
+
 docker-compose up -d
