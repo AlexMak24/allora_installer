@@ -104,7 +104,7 @@ cat > config.json <<EOL
        "nodeRpc": "$RPC_ADDRESS",
        "maxRetries": 1,
        "delay": 1,
-       "submitTx": false
+       "submitTx": true
    },
    "worker": [
        {
@@ -215,7 +215,8 @@ fi
 
 # Установка зависимостей
 pip install -r requirements.txt
-
+chmod +x init.config
+./init.config 
 # Запуск Docker Compose в фоновом режиме
 echo "Запуск ноды..."
 
