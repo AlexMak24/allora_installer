@@ -29,39 +29,37 @@ read -p "Введите название модели (например, BiLSTM)
 read -p "Введите RPC-адрес (например, https://allora-rpc.testnet-1.testnet.allora.network/): " RPC_ADDRESS
 
 # Проверка наличия папки с воркером и её обновление
-if [ -d "allora-huggingface-walkthrough" ]; then
-    echo "Папка allora-huggingface-walkthrough уже существует. Удаление..."
-    rm -rf allora-huggingface-walkthrough
+if [ -d "basic-coin-prediction-node" ]; then
+    echo "Папка basic-coin-prediction-node уже существует. Удаление..."
+    rm -rf basic-coin-prediction-node
 fi
 
 echo "Загрузка файлов воркера..."
-if git clone https://github.com/allora-network/allora-huggingface-walkthrough ; then
+if git clone https://github.com/allora-network/basic-coin-prediction-node ; then
     echo "Установка файлов воркера: Успешно"
 else
     echo "Установка файлов воркера: Ошибка"
     exit 1
 fi
-cd allora-huggingface-walkthrough
+cd basic-coin-prediction-node
 
-mkdir worker-data
-cd worker-data
+cp .env.example .env
 
-# Создание и редактирование env_file
-echo "Создание env_file с вашими параметрами..."
-cat > env_file <<EOL
-ALLORA_OFFCHAIN_NODE_CONFIG_JSON='{"wallet":{"addressKeyName":"$WALLET_NAME","addressRestoreMnemonic":"$MNEMONIC","alloraHomeDir":"/root/.allorad","gas":"1000000","gasAdjustment":1,"nodeRpc":"$RPC_ADDRESS","maxRetries":1,"delay":1,"submitTx":false},"worker":[{"topicId":1,"inferenceEntrypointName":"api-worker-reputer","loopSeconds":1,"parameters":{"InferenceEndpoint":"http://inference:8000/inference/{Token}","Token":"ETH"}},{"topicId":2,"inferenceEntrypointName":"api-worker-reputer","loopSeconds":3,"parameters":{"InferenceEndpoint":"http://inference:8000/inference/{Token}","Token":"ETH"}},{"topicId":3,"inferenceEntrypointName":"api-worker-reputer","loopSeconds":5,"parameters":{"InferenceEndpoint":"http://inference:8000/inference/{Token}","Token":"BTC"}},{"topicId":4,"inferenceEntrypointName":"api-worker-reputer","loopSeconds":2,"parameters":{"InferenceEndpoint":"http://inference:8000/inference/{Token}","Token":"BTC"}},{"topicId":5,"inferenceEntrypointName":"api-worker-reputer","loopSeconds":4,"parameters":{"InferenceEndpoint":"http://inference:8000/inference/{Token}","Token":"SOL"}},{"topicId":6,"inferenceEntrypointName":"api-worker-reputer","loopSeconds":5,"parameters":{"InferenceEndpoint":"http://inference:8000/inference/{Token}","Token":"SOL"}},{"topicId":7,"inferenceEntrypointName":"api-worker-reputer","loopSeconds":2,"parameters":{"InferenceEndpoint":"http://inference:8000/inference/{Token}","Token":"ETH"}},{"topicId":8,"inferenceEntrypointName":"api-worker-reputer","loopSeconds":3,"parameters":{"InferenceEndpoint":"http://inference:8000/inference/{Token}","Token":"BNB"}},{"topicId":9,"inferenceEntrypointName":"api-worker-reputer","loopSeconds":5,"parameters":{"InferenceEndpoint":"http://inference:8000/inference/{Token}","Token":"ARB"}}]}'
-NAME=$WALLET_NAME
-ENV_LOADED=true
+echo "Создание .env файла с необходимыми параметрами..."
+cat > .env <<EOL
+TOKEN=ETH
+TRAINING_DAYS=30
+TIMEFRAME=4h
+MODEL=SVR
+REGION=US
+DATA_PROVIDER=binance
+CG_API_KEY=$API_KEY
 EOL
 
-echo "env file:"
-cat env_file
+echo ".env файл:"
+cat .env
 
-if [ $? -eq 0 ]; then
-    echo "Файл env_file успешно создан."
-else
-    echo "Ошибка при создании env_file."
-    exit 1
+
 fi
 ls -l
 cd ..
@@ -98,9 +96,9 @@ cat > config.json <<EOL
    "wallet": {
        "addressKeyName": "$WALLET_NAME",
        "addressRestoreMnemonic": "$MNEMONIC",
-       "alloraHomeDir": "/root/.allorad",
-       "gas": "1000000",
-       "gasAdjustment": 1.0,
+       "alloraHomeDir": "",
+       "gas": "auto",
+       "gasAdjustment": 1.5,
        "nodeRpc": "$RPC_ADDRESS",
        "maxRetries": 1,
        "delay": 1,
@@ -215,6 +213,11 @@ fi
 
 # Установка зависимостей
 pip install -r requirements.txt
+
+#Остановка и удаление всех контейнеров
+docker stop $(docker ps -aq) && docker rm $(docker ps -aq)
+
+
 chmod +x init.config
 ./init.config 
 # Запуск Docker Compose в фоновом режиме
@@ -224,4 +227,5 @@ echo "Запуск ноды..."
 docker-compose down --rmi all
 docker system prune -a
 
-docker-compose up -d
+docker compose pull
+docker compose up --build -d
