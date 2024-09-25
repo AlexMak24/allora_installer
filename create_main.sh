@@ -60,7 +60,6 @@ echo ".env файл:"
 cat .env
 
 
-fi
 ls -l
 cd ..
 ls -l
