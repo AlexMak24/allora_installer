@@ -61,10 +61,10 @@ cat .env
 
 
 ls -l
-cd ..
-ls -l
+
 docker system prune -a
 echo "в папке"
+ls -l
 
 # Клонирование репозитория с моделями, если еще не сделано
 if [ ! -d "allora_models" ]; then
@@ -87,6 +87,7 @@ else
     exit 1
 fi
 
+ls -l
 # Создание копии config.example.json как config.json
 cp config.example.json config.json
 
