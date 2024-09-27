@@ -41,7 +41,7 @@ while true; do
             ;;
         4)
             echo "Проверка  логов ноды"
-			cd allora-huggingface-walkthrough
+			cd basic-prediction-node
             if docker compose logs -f worker; then
 				echo "Логи контейнера успешно выведены."
 			else
