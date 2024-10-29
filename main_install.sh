@@ -19,7 +19,8 @@ while true; do
     echo "3. Создать основной контейнер для подключения к Allora"
     echo "4. Проверить логи ноды Allora"
     echo "5. Проверка предсказания ноды"
-    echo "6. Выйти из скрипта"
+    echo "6. Запустить скрипт NewLSTM"
+    echo "7. Выйти из скрипта"
     read -p "Выберите опцию: " option
 
     case $option in
@@ -40,35 +41,36 @@ while true; do
             ./create_main.sh
             ;;
         4)
-            echo "Проверка  логов ноды"
-			cd basic-prediction-node
+            echo "Проверка логов ноды"
+            cd basic-prediction-node
             if docker compose logs -f worker; then
-				echo "Логи контейнера успешно выведены."
-			else
-				echo "Не удалось вывести логи контейнера. Проверьте состояние Docker."
-			fi
-			;;
-		
-		5)
-			read -p "Введите название монеты (например, ETH): " TOKEN
+                echo "Логи контейнера успешно выведены."
+            else
+                echo "Не удалось вывести логи контейнера. Проверьте состояние Docker."
+            fi
+            ;;
+        5)
+            read -p "Введите название монеты (например, ETH): " TOKEN
 
-			# Проверка предсказания через ноду
-			
+            # Проверка предсказания через ноду
             echo "Проверка предсказания ноды $TOKEN"
             response=$(curl -s http://localhost:8000/inference/"$TOKEN")
             if [ -z "$response" ]; then
-				echo "Не удалось получить цену $TOKEN. Проверьте состояние ноды."
-			else
-				echo "Цена $TOKEN: $response"
-			fi
+                echo "Не удалось получить цену $TOKEN. Проверьте состояние ноды."
+            else
+                echo "Цена $TOKEN: $response"
+            fi
             ;;
-			
-		6)
+        6)
+            echo "Запуск скрипта NewLSTM"
+            ./NewLSTM.sh
+            ;;
+        7)
             echo "Выход из скрипта."
             exit 0
             ;;
-		*)
-            echo "Неверная опция. Пожалуйста, выберите 1, 2, 3, 4 или 5."
+        *)
+            echo "Неверная опция. Пожалуйста, выберите 1, 2, 3, 4, 5, 6 или 7."
             ;;
     esac
 done
